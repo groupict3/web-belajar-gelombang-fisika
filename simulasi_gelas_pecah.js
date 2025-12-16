@@ -1,74 +1,93 @@
+
 /* ============================================================
    SIMULASI PECAHKAN GELAS – RESONANSI (750 Hz)
+   SUPPORT: DESKTOP & HP (MIC AKTIF)
    ============================================================ */
 
-function isMobile() {
-    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-}
-
-let audioCtx, analyser, mic, dataArray, fftArray;
+// =========================
+// GLOBAL
+// =========================
+let audioCtx, analyser, micStream;
+let dataArray, fftArray;
 let isRecording = false;
-let targetFreq = 750;
+
+const targetFreq = 750;
 let score = 0;
 
+// =========================
+// AUDIO EFEK
+// =========================
 const breakSound = new Audio("gelas_pecah.mp3");
 breakSound.volume = 0.7;
 
-// ELEMENT
+// =========================
+// ELEMENT HTML
+// =========================
 const freqEl = document.getElementById("freq");
 const ampEl = document.getElementById("amp");
 const intensEl = document.getElementById("intens");
 const lambdaEl = document.getElementById("lambda");
-const glass = document.getElementById("glass");
-const broken = document.getElementById("broken");
 const statusEl = document.getElementById("status");
 const scoreEl = document.getElementById("score");
 
-// ============================================================
-// START
-// ============================================================
+const glass = document.getElementById("glass");
+const broken = document.getElementById("broken");
+
+// =========================
+// START MIC
+// =========================
 document.getElementById("startBtn").onclick = async () => {
     if (isRecording) return;
 
-    if (isMobile()) {
-        statusEl.innerText = "Mode HP: Input Manual (tanpa mikrofon)";
-        aktifkanModeManual();
-        return;
-    }
-
     try {
         isRecording = true;
-        statusEl.innerText = "Status: Merekam...";
+        statusEl.innerText = "Status: Meminta izin mikrofon...";
 
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        await audioCtx.resume(); // 🔥 WAJIB DI HP
+
+        micStream = await navigator.mediaDevices.getUserMedia({
+            audio: {
+                echoCancellation: false,
+                noiseSuppression: false,
+                autoGainControl: false
+            }
+        });
+
         analyser = audioCtx.createAnalyser();
         analyser.fftSize = 2048;
 
-        mic = await navigator.mediaDevices.getUserMedia({ audio: true });
-        const source = audioCtx.createMediaStreamSource(mic);
+        const source = audioCtx.createMediaStreamSource(micStream);
         source.connect(analyser);
 
         dataArray = new Uint8Array(analyser.fftSize);
         fftArray = new Uint8Array(analyser.frequencyBinCount);
 
+        statusEl.innerText = "Status: Merekam (Mic Aktif)";
         draw();
-    } catch {
-        alert("Mikrofon tidak bisa diakses");
+
+    } catch (err) {
+        alert("Mikrofon tidak bisa diakses.\nGunakan Firefox / Laptop.");
+        console.error(err);
+        isRecording = false;
     }
 };
 
-// ============================================================
-// STOP
-// ============================================================
+// =========================
+// STOP MIC
+// =========================
 document.getElementById("stopBtn").onclick = () => {
     isRecording = false;
     statusEl.innerText = "Status: Tidak merekam";
-    if (mic) mic.getTracks().forEach(t => t.stop());
+
+    if (micStream) {
+        micStream.getTracks().forEach(t => t.stop());
+    }
 };
 
-// ============================================================
-// DRAW (MIC)
-// ============================================================
+// =========================
+// LOOP ANALISIS AUDIO
+// =========================
 function draw() {
     if (!isRecording) return;
     requestAnimationFrame(draw);
@@ -76,14 +95,20 @@ function draw() {
     analyser.getByteTimeDomainData(dataArray);
     analyser.getByteFrequencyData(fftArray);
 
+    // ===== RMS (AMPLITUDO) =====
     let rms = 0;
     for (let i = 0; i < dataArray.length; i++) {
-        let v = (dataArray[i] - 128) / 128;
+        const v = (dataArray[i] - 128) / 128;
         rms += v * v;
     }
     rms = Math.sqrt(rms / dataArray.length);
 
-    let maxAmp = 0, index = 0;
+    ampEl.textContent = rms.toFixed(3);
+    intensEl.textContent = (rms * rms).toFixed(3);
+
+    // ===== FREKUENSI DOMINAN =====
+    let maxAmp = 0;
+    let index = 0;
     for (let i = 0; i < fftArray.length; i++) {
         if (fftArray[i] > maxAmp) {
             maxAmp = fftArray[i];
@@ -91,53 +116,34 @@ function draw() {
         }
     }
 
-    let freq = index * (audioCtx.sampleRate / 2) / fftArray.length;
-    tampilkanData(freq, rms);
-    cekPecah(freq, rms);
-}
-
-// ============================================================
-// MODE MANUAL (HP)
-// ============================================================
-function aktifkanModeManual() {
-    document.getElementById("manualControl").style.display = "block";
-
-    document.getElementById("freqSlider").addEventListener("input", (e) => {
-        let freq = Number(e.target.value);
-        let rms = (freq > 730 && freq < 770) ? 0.18 : 0.08;
-        tampilkanData(freq, rms);
-        cekPecah(freq, rms);
-    });
-}
-
-// ============================================================
-// TAMPILKAN DATA
-// ============================================================
-function tampilkanData(freq, rms) {
+    const freq = index * (audioCtx.sampleRate / 2) / fftArray.length;
     freqEl.textContent = freq.toFixed(1);
-    ampEl.textContent = rms.toFixed(3);
-    intensEl.textContent = (rms * rms).toFixed(3);
     lambdaEl.textContent = (343 / freq).toFixed(3);
+
+    // ===== ANIMASI GETARAN =====
     glass.style.transform = `scale(${1 + rms * 0.25})`;
+
+    // ===== LOGIKA GELAS PECAH =====
+    if (Math.abs(freq - targetFreq) < 10 && rms > 0.15) {
+        pecahkanGelas();
+    }
 }
 
-// ============================================================
-// CEK PECAH
-// ============================================================
-function cekPecah(freq, rms) {
-    if (Math.abs(freq - targetFreq) < 10 && rms > 0.15) {
-        score++;
-        scoreEl.textContent = score;
+// =========================
+// PECAHKAN GELAS
+// =========================
+function pecahkanGelas() {
+    score++;
+    scoreEl.textContent = score;
 
-        breakSound.currentTime = 0;
-        breakSound.play();
+    breakSound.currentTime = 0;
+    breakSound.play();
 
-        glass.style.display = "none";
-        broken.style.display = "block";
+    glass.style.display = "none";
+    broken.style.display = "block";
 
-        setTimeout(() => {
-            broken.style.display = "none";
-            glass.style.display = "block";
-        }, 900);
-    }
+    setTimeout(() => {
+        broken.style.display = "none";
+        glass.style.display = "block";
+    }, 900);
 }
