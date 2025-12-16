@@ -1,12 +1,7 @@
-
 /* ============================================================
-   SIMULASI PECAHKAN GELAS – RESONANSI (750 Hz)
-   SUPPORT: DESKTOP & HP (MIC AKTIF)
+   SIMULASI PECAHKAN GELAS – MOBILE SAFE
    ============================================================ */
 
-// =========================
-// GLOBAL
-// =========================
 let audioCtx, analyser, micStream;
 let dataArray, fftArray;
 let isRecording = false;
@@ -14,14 +9,10 @@ let isRecording = false;
 const targetFreq = 750;
 let score = 0;
 
-// =========================
-// AUDIO EFEK
-// =========================
-const breakSound = new Audio("gelas_pecah.mp3");
-breakSound.volume = 0.7;
+let breakSound = null;
 
 // =========================
-// ELEMENT HTML
+// ELEMENT
 // =========================
 const freqEl = document.getElementById("freq");
 const ampEl = document.getElementById("amp");
@@ -34,17 +25,21 @@ const glass = document.getElementById("glass");
 const broken = document.getElementById("broken");
 
 // =========================
-// START MIC
+// START BUTTON (GESTURE)
 // =========================
-document.getElementById("startBtn").onclick = async () => {
+document.getElementById("startBtn").addEventListener("click", async () => {
     if (isRecording) return;
 
     try {
+        statusEl.innerText = "Meminta izin mikrofon...";
         isRecording = true;
-        statusEl.innerText = "Status: Meminta izin mikrofon...";
 
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        await audioCtx.resume(); // 🔥 WAJIB DI HP
+        await audioCtx.resume(); // 🔥 WAJIB HP
+
+        // 🔥 BUAT AUDIO SETELAH KLIK
+        breakSound = new Audio("gelas_pecah.mp3");
+        breakSound.volume = 0.7;
 
         micStream = await navigator.mediaDevices.getUserMedia({
             audio: {
@@ -63,30 +58,28 @@ document.getElementById("startBtn").onclick = async () => {
         dataArray = new Uint8Array(analyser.fftSize);
         fftArray = new Uint8Array(analyser.frequencyBinCount);
 
-        statusEl.innerText = "Status: Merekam (Mic Aktif)";
+        statusEl.innerText = "Merekam (Mic Aktif)";
         draw();
 
     } catch (err) {
-        alert("Mikrofon tidak bisa diakses.\nGunakan Firefox / Laptop.");
         console.error(err);
+        alert("Mikrofon diblokir browser.\nCoba Firefox Android.");
         isRecording = false;
     }
-};
+});
 
 // =========================
-// STOP MIC
+// STOP
 // =========================
-document.getElementById("stopBtn").onclick = () => {
+document.getElementById("stopBtn").addEventListener("click", () => {
     isRecording = false;
-    statusEl.innerText = "Status: Tidak merekam";
+    statusEl.innerText = "Tidak merekam";
 
-    if (micStream) {
-        micStream.getTracks().forEach(t => t.stop());
-    }
-};
+    if (micStream) micStream.getTracks().forEach(t => t.stop());
+});
 
 // =========================
-// LOOP ANALISIS AUDIO
+// LOOP
 // =========================
 function draw() {
     if (!isRecording) return;
@@ -95,10 +88,9 @@ function draw() {
     analyser.getByteTimeDomainData(dataArray);
     analyser.getByteFrequencyData(fftArray);
 
-    // ===== RMS (AMPLITUDO) =====
     let rms = 0;
     for (let i = 0; i < dataArray.length; i++) {
-        const v = (dataArray[i] - 128) / 128;
+        let v = (dataArray[i] - 128) / 128;
         rms += v * v;
     }
     rms = Math.sqrt(rms / dataArray.length);
@@ -106,33 +98,29 @@ function draw() {
     ampEl.textContent = rms.toFixed(3);
     intensEl.textContent = (rms * rms).toFixed(3);
 
-    // ===== FREKUENSI DOMINAN =====
-    let maxAmp = 0;
-    let index = 0;
+    let max = 0, idx = 0;
     for (let i = 0; i < fftArray.length; i++) {
-        if (fftArray[i] > maxAmp) {
-            maxAmp = fftArray[i];
-            index = i;
+        if (fftArray[i] > max) {
+            max = fftArray[i];
+            idx = i;
         }
     }
 
-    const freq = index * (audioCtx.sampleRate / 2) / fftArray.length;
+    const freq = idx * (audioCtx.sampleRate / 2) / fftArray.length;
     freqEl.textContent = freq.toFixed(1);
     lambdaEl.textContent = (343 / freq).toFixed(3);
 
-    // ===== ANIMASI GETARAN =====
     glass.style.transform = `scale(${1 + rms * 0.25})`;
 
-    // ===== LOGIKA GELAS PECAH =====
     if (Math.abs(freq - targetFreq) < 10 && rms > 0.15) {
-        pecahkanGelas();
+        pecah();
     }
 }
 
 // =========================
-// PECAHKAN GELAS
+// PECAH
 // =========================
-function pecahkanGelas() {
+function pecah() {
     score++;
     scoreEl.textContent = score;
 
