@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kartu Konsep - Gelombang & Bunyi (SMA)</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="neon">
+
+  <header class="topbar">
+  <div class="top-bar">
+    <input type="text" id="searchInput" placeholder="Cari kata kunci (mis. resonansi)">
+    
+    <select id="topicFilter">
+        <option value="all">Semua Topik</option>
+        <option value="mekanik">Gelombang Mekanik</option>
+        <option value="bunyi">Gelombang Bunyi</option>
+        <option value="fisika">Konsep Umum</option>
+    </select>
+
+    <button class="filter-btn" id="shuffleBtn">Acak</button>
+    <button class="filter-btn" id="resetBtn">Reset</button>
+</div>
+
+  </header>
+
+  <main class="container">
+    <section class="instructions">
+      <p><strong>Petunjuk:</strong> Klik kartu untuk membalik. Tekan tombol <em>Putar</em> pada belakang kartu untuk mendengarkan suara</p>
+    </section>
+
+    <section id="cardGrid" class="grid">
+      <!-- Kartu akan di-inject lewat JS -->
+    </section>
+
+    <nav class="pager">
+      <button id="prevPage">‹ Sebelumnya</button>
+      <span id="pageInfo">1 / 1</span>
+      <button id="nextPage">Berikut ›</button>
+    </nav>
+  </main>
+
+  <footer class="footer">
+    <small>Disusun untuk pembelajaran SMA — ringkas, ilmiah, dan praktis.</small>
+  </footer>
+
+  <script src="kartu_konsep.js"></script>
+</body>
+</html>

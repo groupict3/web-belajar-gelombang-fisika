@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>MENU UTAMA – Gelombang</title>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: "Poppins", sans-serif;
+        color: white;
+        background: url('cover_gelombang.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    .overlay {
+        width: 100%;
+        height: 100vh;
+        background: rgba(0,0,0,0.55);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 45px;
+        font-weight: 800;
+        margin-bottom: 10px;
+        text-shadow: 0 0 18px #00eaff;
+    }
+
+    p {
+        font-size: 18px;
+        color: #c8f7ff;
+        margin-bottom: 40px;
+    }
+
+    .menu-box {
+        background: rgba(255,255,255,0.06);
+        padding: 30px 40px;
+        border-radius: 20px;
+        box-shadow: 0 0 25px rgba(0,255,255,0.25);
+        backdrop-filter: blur(4px);
+    }
+
+    .menu-btn {
+        display: block;
+        width: 260px;
+        padding: 14px;
+        margin: 12px auto;
+        border-radius: 12px;
+        border: none;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: 700;
+        color: #042c3d;
+        background: linear-gradient(90deg, #00d5ff, #27f2ac);
+        box-shadow: 0 0 14px rgba(0,255,255,0.4);
+        transition: 0.2s;
+    }
+
+    .menu-btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0 25px rgba(0,255,255,0.7);
+    }
+
+    /* Tombol kontrol backsound */
+    #soundBtn {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 12px 18px;
+        background: rgba(0,255,255,0.4);
+        border: none;
+        border-radius: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        color: #042c3d;
+        backdrop-filter: blur(4px);
+        transition: 0.2s;
+    }
+
+    #soundBtn:hover {
+        transform: scale(1.1);
+        background: rgba(0,255,255,0.7);
+    }
+</style>
+</head>
+
+<body>
+
+<!-- BACKSOUND -->
+<audio id="bgm" loop>
+    <source src="backsound_menu.mp3" type="audio/mpeg">
+</audio>
+
+<button id="soundBtn">🔊 Backsound: OFF</button>
+
+<div class="overlay">
+
+    <h1>Gelombang</h1>
+    <h2> Ayo mulai belajar</h2>
+    
+
+    <div class="menu-box">
+        <button class="menu-btn" onclick="location.href='simulasi_menu.html'">
+            🎮 Simulasi
+        </button>
+
+        <button class="menu-btn" onclick="location.href='materi.html'">
+            📘 Materi Gelombang
+        </button>
+
+        <button class="menu-btn" onclick="location.href='kartu_konsep.html'">
+            🧩 Kartu Konsep
+        </button>
+
+        <button class="menu-btn" onclick="location.href='latihan.html'">
+            📝 Latihan Soal
+        </button>
+    </div>
+
+</div>
+
+<script>
+    // ===========================
+    // BACKSOUND CONTROL
+    // ===========================
+    const bgm = document.getElementById("bgm");
+    const soundBtn = document.getElementById("soundBtn");
+
+    let soundOn = false; // awalnya mati
+
+    soundBtn.addEventListener("click", () => {
+        soundOn = !soundOn;
+        if (soundOn) {
+            bgm.volume = 0.5;
+            bgm.play();
+            soundBtn.textContent = "🔊 Backsound: ON";
+        } else {
+            bgm.pause();
+            soundBtn.textContent = "🔇 Backsound: OFF";
+        }
+    });
+
+    // Browser hanya boleh play audio setelah user interaksi
+    document.body.addEventListener("click", () => {
+        if (soundOn) bgm.play().catch(()=>{});
+    }, { once: true });
+</script>
+
+</body>
+</html>

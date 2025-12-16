@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Simulasi Garpu Tala</title>
+
+<style>
+    body {
+        background: #07131f;
+        color: white;
+        font-family: Poppins, sans-serif;
+        text-align: center;
+        padding: 30px;
+    }
+    h1 {
+        color: #70e8ff;
+        text-shadow: 0 0 14px #4cdfff;
+        font-size: 34px;
+    }
+    .container {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        margin-top: 40px;
+        flex-wrap: wrap;
+    }
+    .fork-box {
+        width: 260px;
+        padding: 20px;
+        border-radius: 14px;
+        background: rgba(255,255,255,0.06);
+        box-shadow: 0 0 18px rgba(0,200,255,0.22);
+    }
+    .fork-img {
+        width: 90px;
+        transition: 0.2s;
+        filter: drop-shadow(0 0 10px #00eaff);
+    }
+    input[type=number] {
+        width: 120px;
+        padding: 7px;
+        border-radius: 6px;
+        border: none;
+        margin-top: 10px;
+        font-size: 16px;
+        text-align: center;
+    }
+    button {
+        padding: 10px 18px;
+        margin-top: 12px;
+        border: none;
+        background: #17b7ff;
+        color: white;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+    button:hover {
+        background: #45d4ff;
+    }
+    #resText {
+        margin-top: 25px;
+        font-size: 20px;
+        text-shadow: 0 0 8px #00faff;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>Simulasi Garpu Tala</h1>
+<p>Atur kedua frekuensi. hingga terjadi resonansi.</p>
+
+<div class="container">
+
+    <!-- GARPU 1 -->
+    <div class="fork-box">
+        <img src="garpu1.png" id="fork1" class="fork-img">
+        <p>Frekuensi Garpu 1</p>
+        <input type="number" id="f1" value="0" min="100" max="1000">
+    </div>
+
+    <!-- GARPU 2 -->
+    <div class="fork-box">
+        <img src="garpu2.png" id="fork2" class="fork-img">
+        <p>Frekuensi Garpu 2</p>
+        <input type="number" id="f2" value="0" min="100" max="1000">
+    </div>
+
+</div>
+
+<button id="playBtn">Bunyikan</button>
+
+<p id="resText">Belum resonansi</p>
+
+<script src="simulasi_garpu_tala.js"></script>
+      <a href="menu.html" class="btn">← Kembali ke Menu utama</a>
+    </div>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

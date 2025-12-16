@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Latihan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+  :root{
+    --bg:#0d1b2a;
+    --card:#122033;
+    --accent:#00c3ff;
+    --accent2:#7af0a8;
+    --muted:#9fb3c8;
+    --good:#38f57d;
+    --bad:#ff6b6b;
+  }
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0; padding:22px;
+    background:var(--bg);
+    font-family:"Poppins",sans-serif;
+    color:#fff;
+    -webkit-font-smoothing:antialiased;
+    text-align:center;
+  }
+
+  header{
+    display:flex; justify-content:space-between;
+    max-width:1100px; margin:auto;
+    margin-bottom:25px;
+  }
+  h1{margin:0; color:var(--accent); font-size:26px;}
+
+  .btn{
+    padding:10px 18px;
+    border:none; cursor:pointer;
+    border-radius:10px;
+    background:var(--accent);
+    color:#042233; font-weight:700;
+    transition:0.2s;
+  }
+  .btn:hover{
+    transform:translateY(-4px);
+    box-shadow:0 8px 25px rgba(0,195,255,0.4);
+  }
+
+  .quiz-card{
+    background:rgba(42, 140, 179, 0.04);
+    padding:25px;
+    border-radius:14px;
+    width:90%;
+    max-width:800px;
+    margin:auto;
+    box-shadow:0 12px 35px rgba(0,0,0,0.5);
+  }
+
+  #number{color:var(--muted); margin-bottom:5px;}
+  #question{font-size:24px; margin-bottom:20px;}
+
+  .choices{
+    display:grid; gap:12px;
+    grid-template-columns:1fr;
+  }
+
+  .choice{
+    background:rgba(255,255,255,0.06);
+    padding:16px; border-radius:12px;
+    cursor:pointer; font-size:18px;
+    border:2px solid transparent;
+    transition:0.2s;
+  }
+  .choice:hover{
+    transform:translateY(-5px);
+    box-shadow:0 12px 25px rgba(0,0,0,0.4);
+  }
+
+  .correct{border-color:var(--good); background:rgba(56,245,125,0.1);}
+  .wrong{border-color:var(--bad); background:rgba(255,107,107,0.1);}
+
+  #explain{
+    margin-top:15px; padding:12px;
+    background:rgba(255,255,255,0.05);
+    border-radius:10px; display:none;
+    color:var(--muted);
+  }
+
+  #nextBtn{
+    display:none; margin-top:20px;
+    background:var(--accent2);
+    color:#042233; padding:14px 20px;
+    border-radius:12px; font-weight:900;
+  }
+
+  #resultBox{
+    display:none;
+    margin-top:40px;
+  }
+
+  #scoreVal{
+    font-size:40px;
+    color:var(--accent2);
+    margin-bottom:10px;
+  }
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>Latihan</h1>
+  <div>
+    <button id="backSim" class="btn">⬅ Menu Utama</button>
+    <button id="bgmToggle" class="btn">🔇 Backsound: OFF</button>
+  </div>
+</header>
+
+<div class="quiz-card" id="quizCard">
+
+  <div id="number"></div>
+  <div id="question"></div>
+
+  <div id="choices" class="choices"></div>
+
+  <div id="explain"></div>
+
+  <button id="nextBtn">Next ➜</button>
+
+</div>
+
+<div id="resultBox">
+  <h2>🎉 Latihan Selesai!</h2>
+  <div id="scoreVal"></div>
+  <button class="btn" id="toSimResult">Kembali ke Menu Utama</button>
+</div>
+
+<audio id="bgm" loop>
+  <source src="backsound.mp3" type="audio/mpeg">
+</audio>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script src="latihan.js"></script>
+
+</body>
+</html>

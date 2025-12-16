@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Simulasi Garpu Tala — Eksperimen</title>
+<link rel="stylesheet" href="style.css"> <!-- optional, tetap bisa pakai -->
+<style>
+  :root{
+    --bg:#071427; --card:#0f2a3f; --accent:#39d0ff; --accent2:#6af0a0; --muted:#99b3c4;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,#03121a,#071427);color:#eaf7ff;font-family:Inter,Arial;padding:18px}
+  .wrap{max-width:1100px;margin:0 auto}
+  header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+  h1{margin:6px 0;color:var(--accent)}
+  .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .btn{background:linear-gradient(90deg,var(--accent),#54d8ff);color:#042233;border:none;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:700;box-shadow:0 8px 20px rgba(0,0,0,0.4)}
+  .btn.stop{background:linear-gradient(90deg,#ff7a7a,#ff4e4e);color:#2b0606}
+  .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:16px;border-radius:12px;margin-top:14px; box-shadow:0 12px 30px rgba(0,0,0,0.6)}
+  .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  label{font-size:14px;color:var(--muted)}
+  input[type=range]{width:260px}
+  input[type=number]{width:110px;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.05);background:transparent;color:inherit}
+  .small{font-size:13px;color:var(--muted)}
+  #sinusCanvas{width:100%;height:180px;border-radius:8px;background:linear-gradient(180deg,#02121a,#072733);display:block;margin-top:12px}
+  table{width:100%;border-collapse:collapse;margin-top:12px}
+  th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.03);text-align:left}
+  .danger{background:#ff4e4e;color:white;border:none;padding:8px 10px;border-radius:8px;cursor:pointer}
+  .muted-btn{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 10px;border-radius:8px;color:var(--muted);cursor:pointer}
+  .control-right{margin-left:auto}
+  .note{font-size:13px;color:var(--muted);margin-top:8px}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Simulasi Gelombang— Eksperimen</h1>
+    <div>
+      <a href="menu.html" class="btn">← Kembali ke Menu utama</a>
+    </div>
+  </header>
+
+  <div class="panel">
+    <div class="row">
+      <div>
+        <label>Frekuensi (Hz)</label>
+        <div class="row" style="align-items:center">
+          <input id="freqRange" type="range" min="100" max="1200" value="440" step="1">
+          <input id="freqNumber" type="number" min="100" max="1200" value="440">
+        </div>
+        <div class="small">Ubah frekuensi — frekuensi ini juga menentukan amplitudo simulasi (tidak dapat diedit terpisah).</div>
+      </div>
+
+      <div style="min-width:220px">
+        <label>Kontrol</label>
+        <div class="row" style="margin-top:6px">
+          <button id="playBtn" class="btn">▶ Bunyi</button>
+          <button id="stopBtn" class="btn stop">⛔ Stop</button>
+          <button id="toggleGraph" class="muted-btn control-right">Tampilkan Grafik</button>
+        </div>
+      </div>
+
+      <div style="margin-left:auto; text-align:right">
+        <div class="small">Amplitudo (terkalkulasi): <b id="currentAmp">0.20</b></div>
+        <div class="note">Amplitudo mengikuti frekuensi: makin tinggi frek → (sistem contoh) amplitudo berubah menurut fungsi frek.</div>
+      </div>
+    </div>
+
+    <!-- SINUS canvas (default hidden) -->
+    <canvas id="sinusCanvas" class="hidden" width="900" height="180"></canvas>
+
+    <!-- Observasi -->
+    <div style="margin-top:14px">
+      <div class="row">
+        <div>
+          <button id="addObs" class="btn">Tambah Data Pengamatan</button>
+        </div>
+        <div style="margin-left:auto">
+          <button id="deleteAll" class="danger">Hapus Semua Data</button>
+        </div>
+      </div>
+
+      <table id="obsTable" aria-label="Tabel Pengamatan">
+        <thead>
+          <tr><th>No</th><th>Waktu</th><th>Frekuensi (Hz)</th><th>Amplitudo</th><th>Aksi</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<script src="simulasi_gelombang.js"></script>
+</body>
+</html>

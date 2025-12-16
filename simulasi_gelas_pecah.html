@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Simulasi Pecahkan Gelas (Resonansi)</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .title {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 32px;
+            color: #7be8ff;
+            text-shadow: 0 0 10px #77d9ff;
+        }
+        .stats-box {
+            width: 180px;
+            padding: 15px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+            display: inline-block;
+            margin: 10px;
+            box-shadow: 0 0 10px rgba(0,255,255,0.2);
+        }
+        .glass-img {
+            display: block;
+            margin: 30px auto;
+            width: 200px;
+            filter: drop-shadow(0 0 20px #00eaff);
+        }
+        button {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        .start { background: #1db9ff; color: white; }
+        .stop { background: #ff3b3b; color: white; }
+    </style>
+</head>
+
+<body class="dark">
+
+    <h1 class="title">Simulasi Pecahkan Gelas (Resonansi)</h1>
+
+    <div style="text-align:center; margin-bottom:15px;">
+        <button class="start" id="startBtn">Mulai Rekam</button>
+        <button class="stop" id="stopBtn">Stop</button>
+        <span id="status" style="margin-left:10px; color:#7be8ff;">Status: Tidak merekam</span>
+    </div>
+
+    <div style="text-align:center;">
+        <div class="stats-box">Frekuensi: <span id="freq">0</span> Hz</div>
+        <div class="stats-box">Amplitudo: <span id="amp">0</span></div>
+        <div class="stats-box">Intensitas: <span id="intens">0</span></div>
+        <div class="stats-box">λ: <span id="lambda">0</span> m</div>
+    </div>
+
+    <p style="text-align:center; margin-top:10px; color:#9aefff;">
+        *Gelas akan pecah jika frekuensi mendekati 750 Hz dan amplitudo cukup besar (resonansi).*
+    </p>
+
+    <!-- gambar normal -->
+    <img src="gelas.png" id="glass" class="glass-img">
+
+    <!-- gambar gelas pecah -->
+    <img src="gelas_broken.png" id="broken" class="glass-img" style="display:none;">
+
+    <h2 style="text-align:center; color:white;">Score: <span id="score">0</span></h2>
+
+    <div id="manualControl" style="display:none">
+  <label>Frekuensi (Hz)</label>
+  <input type="range" id="freqSlider" min="100" max="1000" value="300">
+</div>
+
+    <script src="simulasi_gelas_pecah.js"></script>
+      <a href="menu.html" class="btn">← Kembali ke Menu utama</a>
+    </div>
+
+</body>
+</html>
